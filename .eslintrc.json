@@ -32,6 +32,7 @@
 		"no-var": "error",
 		"semi": "error",
 		"strict": ["error", "global"],
+		"eqeqeq": ["error", "smart"],
 		"no-multiple-empty-lines": ["error", {"max": 1, "maxEOF": 1}],
 		"quotes": ["error", "double", {"allowTemplateLiterals": true}],
 		"prettier/prettier": [
