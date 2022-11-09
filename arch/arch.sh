@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+system_update() {
+    sudo pacman --noconfirm -Syu
+}
+
 misc_package_setup() {
     sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw papirus-icon-theme
 }
@@ -96,6 +100,7 @@ yay_setup() {
     cd yay && makepkg -si
 }
 
+system_update
 dev_package_setup
 python_setup
 printer_setup
