@@ -10,7 +10,7 @@ misc_package_setup() {
 
 dev_package_setup() {
     sudo pacman -S --noconfirm --needed wireguard-tools openresolv github-cli jdk-openjdk nethogs gpick which
-    eval "ssh-agent -s"
+    eval "$(ssh-agent -s)"
 }
 
 printer_setup() {
