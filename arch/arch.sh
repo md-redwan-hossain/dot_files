@@ -77,7 +77,6 @@ font_tweaks() {
     sudo pacman -S --noconfirm --needed noto-fonts
     curl -s https://raw.githubusercontent.com/SharafatKarim/Manjaro-Bangla-Font-Fix/main/main.sh | bash
 
-    touch ~/.profile
     echo 'export FREETYPE_PROPERTIES="truetype:interpreter-version=40 cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"' >>~/.profile
 }
 
