@@ -4,6 +4,8 @@ import os
 try:
     from clint.textui import colored
 except ModuleNotFoundError:
+    print("\nDependency missing! Installing...\n")
+    os.system("sudo -S pacman -S --needed --noconfirm python-pip")
     os.system("pip install clint")
     from clint.textui import colored
 
