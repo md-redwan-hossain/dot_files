@@ -1,27 +1,34 @@
 import os
 
 
+try:
+    from clint.textui import colored
+except ModuleNotFoundError:
+    os.system("pip install clint")
+    from clint.textui import colored
+
+
 def pkg_installer() -> None:
     pkg_name = input("enter package name: ")
     os.system(f"sudo -S pacman -S --needed {pkg_name}")
-    print("Done...")
+    print(colored.blue("DONE..."))
 
 
 def pkg_uninstaller() -> None:
     pkg_name = input("enter package name: ")
     os.system(f"sudo -S pacman -R {pkg_name}")
     os.system("sudo -S pacman -R --noconfirm $(pacman -Qdtq)")
-    print("Done...")
+    print(colored.blue("DONE..."))
 
 
 def pkg_search() -> None:
     pkg_keyword = input("enter search keyword: ")
-    os.system(f"sudo -S pacman -Ss {pkg_keyword}")
+    os.system(f"pacman -Ss {pkg_keyword}")
 
 
 def full_system_upgrade() -> None:
     os.system(f"sudo -S pacman -Syu")
-    print("Done...")
+    print(colored.blue("DONE..."))
 
 
 def input_error_handler() -> int:
@@ -29,18 +36,18 @@ def input_error_handler() -> int:
         try:
             choice = int(input("Enter your choice: "))
         except ValueError:
-            print("Invalid input. Try again")
+            print(colored.red("Invalid input. Try again"))
         else:
             return choice
 
 
 def list_menu() -> int:
     print("\n")
-    print("1. Package Installer")
-    print("2. Package Un-installer")
-    print("3. Package Search")
-    print("4. Full system upgrade")
-    print("0. Exit")
+    print(colored.green("1. Package Installer"))
+    print(colored.green("2. Package Un-installer"))
+    print(colored.green("3. Package Search"))
+    print(colored.green("4. Full system upgrade"))
+    print(colored.red("0. Exit"))
     choice = input_error_handler()
     return choice
 
@@ -59,10 +66,10 @@ def navigation() -> None:
                 case 4:
                     full_system_upgrade()
                 case 0:
-                    print("Bye...")
+                    print(colored.blue("\nBYE..."))
                     break
     except KeyboardInterrupt:
-        print("\nBye...")
+        print(colored.blue("\nBYE..."))
 
 
 if __name__ == "__main__":

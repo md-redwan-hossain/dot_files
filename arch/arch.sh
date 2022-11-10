@@ -9,8 +9,9 @@ misc_package_setup() {
 }
 
 dev_package_setup() {
-    sudo pacman -S --noconfirm --needed wireguard-tools openresolv github-cli jdk-openjdk nethogs gpick which
+    sudo pacman -S --noconfirm --needed wireguard-tools keychain openresolv github-cli jdk-openjdk nethogs gpick which
     eval "$(ssh-agent -s)"
+    eval "$(keychain --eval)"
 }
 
 printer_setup() {
@@ -66,7 +67,6 @@ service_enabler() {
 
     sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
-
 
     sudo systemctl start tlp.service
     sudo systemctl enable tlp.service
