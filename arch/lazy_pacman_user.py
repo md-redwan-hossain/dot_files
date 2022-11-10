@@ -45,7 +45,7 @@ def list_menu() -> int:
     return choice
 
 
-def navigation():
+def navigation() -> None:
     try:
         while True:
             choice_input = list_menu()
