@@ -23,21 +23,24 @@ def entry_menu() -> int:
 def pkg_installer() -> None:
     pkg_name = input("enter package name: ")
     os.system(f"sudo -S pacman -S --needed {pkg_name}")
+    print("Done.")
 
 
 def pkg_uninstaller() -> None:
     pkg_name = input("enter package name: ")
     os.system(f"sudo -S pacman -Rdd {pkg_name}")
     os.system("sudo -S pacman -R $(pacman -Qdtq)")
+    print("Done.")
 
 
-while True:
-    choice_input = entry_menu()
-    match choice_input:
-        case 1:
-            pkg_installer()
-        case 2:
-            pkg_uninstaller()
-        case 0:
-            print("Bye...")
-            break
+if __name__ == "__main__":
+    while True:
+        choice_input = entry_menu()
+        match choice_input:
+            case 1:
+                pkg_installer()
+            case 2:
+                pkg_uninstaller()
+            case 0:
+                print("Bye...")
+                break
