@@ -5,7 +5,7 @@ system_update() {
 }
 
 misc_package_setup() {
-    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw papirus-icon-theme
+    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw papirus-icon-theme bluez-utils bluez
 }
 
 dev_package_setup() {
@@ -26,7 +26,7 @@ python_setup() {
 }
 
 docker_setup() {
-    sudo pacman --noconfirm --needed docker docker-compose
+    sudo pacman --noconfirm --needed docker docker-compose ctop
     sudo systemctl start docker.service
     sudo systemctl enable docker.service
     sudo usermod -aG docker "$USER"
@@ -63,6 +63,10 @@ ngrok_setup() {
 service_enabler() {
     sudo systemctl start fstrim.timer
     sudo systemctl enable fstrim.timer
+
+    sudo systemctl start bluetooth.service
+    sudo systemctl enable bluetooth.service
+
 
     sudo systemctl start tlp.service
     sudo systemctl enable tlp.service
