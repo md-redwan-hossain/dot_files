@@ -10,12 +10,13 @@ except ModuleNotFoundError:
     from clint.textui import colored
 
 
-def choice_input_handler():
+def orphan_pkg_remove_choice_input_handler() -> bool:
     while True:
-        input_choice = input("Do you want to uninstall(y/n): ").lower()
+        input_choice = input(
+            "Do you want to uninstall orphan packages? (y/n): "
+        ).lower()
         if input_choice not in ("y", "n"):
             print(colored.red("Invalid input. Try again."))
-
         else:
             return True if input_choice == "y" else False
 
@@ -39,19 +40,23 @@ def pkg_installer() -> None:
 def pkg_uninstaller() -> None:
     pkg_name = input("enter package name: ")
     os.system(f"sudo -S pacman -R {pkg_name}")
-    os.system("sudo -S pacman -R --noconfirm $(pacman -Qdtq)")
-    print(colored.blue("DONE..."))
+    orphan_pkg_view()
 
 
-def orphan_pkg() -> None:
+def orphan_pkg_view() -> None:
     result = os.popen("pacman -Qdt").read()
     if result == "":
         print(colored.blue("No orphan package found"))
-    else:
-        uninstall_choice = choice_input_handler()
-        if uninstall_choice:
-            os.system("sudo -S pacman -R --noconfirm $(pacman -Qdtq)")
         print(colored.blue("DONE..."))
+    else:
+        uninstall_choice = orphan_pkg_remove_choice_input_handler()
+        if uninstall_choice:
+            orphan_pkg_remove()
+
+
+def orphan_pkg_remove() -> None:
+    os.system("sudo -S pacman -R --noconfirm $(pacman -Qdtq)")
+    print(colored.blue("DONE..."))
 
 
 def pkg_search() -> None:
@@ -90,7 +95,7 @@ def navigation() -> None:
                 case 4:
                     full_system_upgrade()
                 case 5:
-                    orphan_pkg()
+                    orphan_pkg_view()
                 case 0:
                     print(colored.blue("\nBYE..."))
                     break
