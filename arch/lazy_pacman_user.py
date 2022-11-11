@@ -11,10 +11,11 @@ except ModuleNotFoundError:
 
 
 def choice_input_handler():
-    input_choice = input("Do you want to uninstall(y/n): ").lower()
     while True:
+        input_choice = input("Do you want to uninstall(y/n): ").lower()
         if input_choice not in ("y", "n"):
-            continue
+            print(colored.red("Invalid input. Try again."))
+
         else:
             return True if input_choice == "y" else False
 
