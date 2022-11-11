@@ -10,6 +10,25 @@ except ModuleNotFoundError:
     from clint.textui import colored
 
 
+def choice_input_handler():
+    input_choice = input("Do you want to uninstall(y/n): ").lower()
+    while True:
+        if input_choice not in ("y", "n"):
+            continue
+        else:
+            return True if input_choice == "y" else False
+
+
+def list_menu_input_handler() -> int:
+    while True:
+        try:
+            choice = int(input("Enter your choice: "))
+        except ValueError:
+            print(colored.red("Invalid input. Try again"))
+        else:
+            return choice
+
+
 def pkg_installer() -> None:
     pkg_name = input("enter package name: ")
     os.system(f"sudo -S pacman -S --needed {pkg_name}")
@@ -23,6 +42,17 @@ def pkg_uninstaller() -> None:
     print(colored.blue("DONE..."))
 
 
+def orphan_pkg() -> None:
+    result = os.popen("pacman -Qdt").read()
+    if result == "":
+        print(colored.blue("No orphan package found"))
+    else:
+        uninstall_choice = choice_input_handler()
+        if uninstall_choice:
+            os.system("sudo -S pacman -R --noconfirm $(pacman -Qdtq)")
+        print(colored.blue("DONE..."))
+
+
 def pkg_search() -> None:
     pkg_keyword = input("enter search keyword: ")
     os.system(f"pacman -Ss {pkg_keyword}")
@@ -33,24 +63,15 @@ def full_system_upgrade() -> None:
     print(colored.blue("DONE..."))
 
 
-def input_error_handler() -> int:
-    while True:
-        try:
-            choice = int(input("Enter your choice: "))
-        except ValueError:
-            print(colored.red("Invalid input. Try again"))
-        else:
-            return choice
-
-
 def list_menu() -> int:
     print("\n")
     print(colored.green("1. Package Installer"))
     print(colored.green("2. Package Un-installer"))
     print(colored.green("3. Package Search"))
     print(colored.green("4. Full system upgrade"))
+    print(colored.green("5. Manage Orphan packages"))
     print(colored.red("0. Exit"))
-    choice = input_error_handler()
+    choice = list_menu_input_handler()
     return choice
 
 
@@ -67,6 +88,8 @@ def navigation() -> None:
                     pkg_search()
                 case 4:
                     full_system_upgrade()
+                case 5:
+                    orphan_pkg()
                 case 0:
                     print(colored.blue("\nBYE..."))
                     break
