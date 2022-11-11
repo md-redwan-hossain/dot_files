@@ -5,13 +5,13 @@ system_update() {
 }
 
 misc_package_setup() {
-    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw papirus-icon-theme bluez-utils bluez
+    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw papirus-icon-theme bluez-utils bluez firefox
 }
 
 dev_package_setup() {
-    sudo pacman -S --noconfirm --needed wireguard-tools openresolv github-cli jdk-openjdk nethogs gpick which
+    sudo pacman -S --noconfirm --needed wireguard-tools openresolv git github-cli jdk-openjdk nethogs gpick which
     eval "$(ssh-agent -s)"
-    eval "$(keychain --eval)"
+    # eval "$(keychain --eval)"
 }
 
 printer_setup() {
