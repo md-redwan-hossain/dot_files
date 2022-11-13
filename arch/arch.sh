@@ -6,7 +6,7 @@ system_update() {
 
 
 utility_package_setup() {
-    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw  bluez-utils bluez firefox pavucontrol flatpak gnome-calculator nnn ncdu bat duf btop filelight
+    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw  bluez-utils bluez firefox pavucontrol flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie
 }
 
 misc_package_setup() {
@@ -19,7 +19,7 @@ dev_package_setup() {
     curl -O --output-dir $HOME https://raw.githubusercontent.com/redwan-hossain/dot_files/main/arch/lazypac.py
     echo 'alias lpac="python $HOME/lazypac.py"' >>~/.bashrc
     source ~/.bashrc
-    eval "$(ssh-agent)"
+
 }
 
 
@@ -73,9 +73,46 @@ ngrok_setup() {
     sudo rm ~/ngrok.tgz
 }
 
+
+
+
+ssh_fix(){
+
+	echo 'Setting SSH Key persistence fix'
+	cat <<-'EOF' | tee -a ${HOME}/.bashrc >/dev/null
+
+SSH_ENV=$HOME/.ssh/environment
+
+# start the ssh-agent
+function start_agent {
+    rm ~/.ssh/environment
+    # spawn ssh-agent
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+    /usr/bin/ssh-add
+}
+
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" > /dev/null
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
+else
+    start_agent;
+fi
+	EOF
+}
+
+
+
 service_enabler() {
     sudo systemctl start fstrim.timer
     sudo systemctl enable fstrim.timer
+
+    sudo systemctl enable cronie.service
+    sudo systemctl start cronie.service
 
     sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
@@ -107,6 +144,7 @@ font_tweaks() {
 
     echo 'export FREETYPE_PROPERTIES="truetype:interpreter-version=40 cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"' >>~/.profile
     source ~/.profile
+    source ~/.bashrc
 
 }
 
@@ -141,9 +179,8 @@ printer_setup
 docker_setup
 node_js_setup
 ngrok_setup
+ssh_fix
 font_tweaks
 service_enabler
 disable_watchdog
 yay_setup
-
-# sudo cp 76-bangla.conf /etc/fonts/conf.d
