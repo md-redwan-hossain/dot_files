@@ -2,10 +2,17 @@ import os
 
 
 try:
+    import pip
+except ModuleNotFoundError:
+    print("\nPython Package Manager(pip) is missing! Installing...\n")
+    os.system("sudo -S pacman -S --needed --noconfirm python-pip")
+
+
+
+try:
     from clint.textui import colored
 except ModuleNotFoundError:
     print("\nDependency missing! Installing...\n")
-    os.system("sudo -S pacman -S --needed --noconfirm python-pip")
     os.system("pip install clint")
     from clint.textui import colored
 
@@ -49,6 +56,8 @@ def orphan_pkg_view() -> None:
         print(colored.blue("No orphan package found"))
         print(colored.blue("DONE..."))
     else:
+        print(colored.blue("\nOrphan package list:"))
+        print(result)
         uninstall_choice = orphan_pkg_remove_choice_input_handler()
         if uninstall_choice:
             orphan_pkg_remove()
