@@ -29,7 +29,7 @@ python_setup() {
     echo 'export PATH=$PATH:"$HOME/.local/bin"' >>~/.bashrc
     source ~/.bashrc
     pip install python-lsp-server black rope pylint
-    curl -O --output-dir "$HOME" https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/settings.json
+    curl -O --output-dir "$HOME"/.config/kate/lspclient https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/settings.json
 }
 
 
