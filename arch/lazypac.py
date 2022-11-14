@@ -1,12 +1,19 @@
 import os
+from shutil import which
 
 
-try:
-    import pip
-except ModuleNotFoundError:
+def install_pip() -> None:
     print("\nPython Package Manager(pip) is missing! Installing...\n")
     os.system("sudo -S pacman -S --needed --noconfirm python-pip")
 
+
+def install_pacman_contrib() -> None:
+    print("\npacman-contrib is missing! Installing...\n")
+    os.system("sudo -S pacman -S --needed --noconfirm pacman-contrib")
+
+
+install_pip() if not which("pip") else None
+install_pacman_contrib() if not which("paccache") else None
 
 
 try:
@@ -47,10 +54,10 @@ def pkg_installer() -> None:
 def pkg_uninstaller() -> None:
     pkg_name = input("enter package name: ")
     os.system(f"sudo -S pacman -R {pkg_name}")
-    orphan_pkg_view()
+    orphan_pkg_manage()
 
 
-def orphan_pkg_view() -> None:
+def orphan_pkg_manage() -> None:
     result = os.popen("pacman -Qdt").read()
     if result == "":
         print(colored.blue("No orphan package found"))
@@ -58,13 +65,16 @@ def orphan_pkg_view() -> None:
     else:
         print(colored.blue("\nOrphan package list:"))
         print(result)
+
         uninstall_choice = orphan_pkg_remove_choice_input_handler()
         if uninstall_choice:
-            orphan_pkg_remove()
+            os.system("sudo -S pacman -R --noconfirm $(pacman -Qdtq)")
+            print(colored.blue("DONE..."))
 
 
-def orphan_pkg_remove() -> None:
-    os.system("sudo -S pacman -R --noconfirm $(pacman -Qdtq)")
+def pacman_cache_remove() -> None:
+    os.system("sudo paccache -r")
+    os.system("sudo paccache -ruk0")
     print(colored.blue("DONE..."))
 
 
@@ -74,17 +84,19 @@ def pkg_search() -> None:
 
 
 def full_system_upgrade() -> None:
-    os.system(f"sudo -S pacman -Syu")
+    os.system("sudo -S pacman -Syu")
     print(colored.blue("DONE..."))
 
 
 def list_menu() -> int:
     print("\n")
+    print(colored.blue("Lazypac- Pacman simplifier for lazy pacman users"))
     print(colored.green("1. Package Installer"))
     print(colored.green("2. Package Un-installer"))
     print(colored.green("3. Package Search"))
     print(colored.green("4. Full system upgrade"))
     print(colored.green("5. Manage Orphan packages"))
+    print(colored.green("6. Remove Pacman cache"))
     print(colored.red("0. Exit"))
     choice = list_menu_input_handler()
     return choice
@@ -104,7 +116,9 @@ def navigation() -> None:
                 case 4:
                     full_system_upgrade()
                 case 5:
-                    orphan_pkg_view()
+                    orphan_pkg_manage()
+                case 6:
+                    pacman_cache_remove()
                 case 0:
                     print(colored.blue("\nBYE..."))
                     break

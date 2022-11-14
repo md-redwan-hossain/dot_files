@@ -6,17 +6,17 @@ system_update() {
 
 
 utility_package_setup() {
-    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw  bluez-utils bluez firefox pavucontrol flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie
+    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw bluez-utils bluez firefox pavucontrol flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie pacman-contrib
 }
 
 misc_package_setup() {
-    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-ubuntu-font-family enchant mythes-en hunspell-en_US gst-plugins-good aspell-en icedtea-web gst-libav languagetool libmythes
+    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-ubuntu-font-family languagetool fuse-exfat exfat-utils ntfs-3g
 }
 
 dev_package_setup() {
     sudo pacman -S --noconfirm --needed wireguard-tools openresolv git github-cli jdk-openjdk nethogs gpick which curl wget android-tools
 
-    curl -O --output-dir $HOME https://raw.githubusercontent.com/redwan-hossain/dot_files/main/arch/lazypac.py
+    curl -O --output-dir "$HOME" https://raw.githubusercontent.com/redwan-hossain/dot_files/main/arch/lazypac.py
     echo 'alias lpac="python $HOME/lazypac.py"' >>~/.bashrc
     source ~/.bashrc
 
@@ -28,6 +28,8 @@ python_setup() {
     sudo pacman -S --noconfirm --needed python python-pip
     echo 'export PATH=$PATH:"$HOME/.local/bin"' >>~/.bashrc
     source ~/.bashrc
+    pip install python-lsp-server black rope pylint
+    curl -O --output-dir "$HOME" https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/settings.json
 }
 
 
@@ -79,13 +81,12 @@ ngrok_setup() {
 ssh_fix(){
 
 	echo 'Setting SSH Key persistence fix'
-	cat <<-'EOF' | tee -a ${HOME}/.bashrc >/dev/null
+	cat <<-'EOF' | tee -a "$HOME"/.bashrc >/dev/null
 
-SSH_ENV=$HOME/.ssh/environment
+SSH_ENV="$HOME"/.ssh/environment
 
 # start the ssh-agent
 function start_agent {
-    rm ~/.ssh/environment
     # spawn ssh-agent
     /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
 
@@ -111,8 +112,8 @@ service_enabler() {
     sudo systemctl start fstrim.timer
     sudo systemctl enable fstrim.timer
 
-    sudo systemctl enable cronie.service
     sudo systemctl start cronie.service
+    sudo systemctl enable cronie.service
 
     sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
@@ -129,23 +130,22 @@ service_enabler() {
 font_tweaks() {
     sudo pacman -S --noconfirm --needed noto-fonts
 
-    FILE=$HOME/.config/fontconfig/fonts.conf
+    FILE="$HOME"/.config/fontconfig/fonts.conf
 
     if [[ -f "$FILE" ]]; then
     echo "$FILE exists"
-    cp $HOME/.config/fontconfig/fonts.conf $HOME/.config/fontconfig/fonts_bak.conf
-    rm $HOME/.config/fontconfig/fonts.conf
+    cp "$HOME"/.config/fontconfig/fonts.conf "$HOME"/.config/fontconfig/fonts_bak.conf
+    rm "$HOME"/.config/fontconfig/fonts.conf
     echo "$FILE is backuped and removed"
     fi
 
-    curl -O --output-dir $HOME/.config/fontconfig https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/fonts.conf
+    curl -O --output-dir "$HOME"/.config/fontconfig https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/fonts.conf
 
     sudo curl -O --output-dir /etc/fonts/conf.d https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/76-bangla.conf
 
     echo 'export FREETYPE_PROPERTIES="truetype:interpreter-version=40 cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"' >>~/.profile
     source ~/.profile
     source ~/.bashrc
-
 }
 
 disable_watchdog() {
