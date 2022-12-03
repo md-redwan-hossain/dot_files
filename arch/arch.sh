@@ -6,29 +6,38 @@ system_update() {
 
 
 utility_package_setup() {
-    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw bluez-utils bluez firefox pavucontrol flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie pacman-contrib
+    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw bluez-utils bluez pulseaudio-bluetooth firefox flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie pacman-contrib neofetch
 }
 
 misc_package_setup() {
-    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-ubuntu-font-family languagetool fuse-exfat exfat-utils ntfs-3g
+    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-ubuntu-font-family noto-fonts noto-fonts-emoji ttf-cascadia-code fuse-exfat exfat-utils ntfs-3g
+    # languagetool
 }
 
 dev_package_setup() {
-    sudo pacman -S --noconfirm --needed wireguard-tools openresolv git github-cli jdk-openjdk nethogs gpick which curl wget android-tools
+    sudo pacman -S --noconfirm --needed wireguard-tools openresolv graphviz git github-cli jdk-openjdk nethogs gpick which curl wget android-tools base-devel
 
     curl -O --output-dir "$HOME" https://raw.githubusercontent.com/redwan-hossain/dot_files/main/arch/lazypac.py
     echo 'alias lpac="python $HOME/lazypac.py"' >>~/.bashrc
     source ~/.bashrc
-
+    mkdir ~/.ssh
 }
 
 
 
 python_setup() {
     sudo pacman -S --noconfirm --needed python python-pip
+    sudo pacman -S --noconfirm --needed base-devel openssl zlib xz tk
+    curl https://pyenv.run | bash
     echo 'export PATH=$PATH:"$HOME/.local/bin"' >>~/.bashrc
+
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >>~/.bashrc
+    echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >>~/.bashrc
+    echo 'eval "$(pyenv init -)"' >>~/.bashrc
+    echo 'eval "$(pyenv virtualenv-init -)"' >>~/.bashrc
+
     source ~/.bashrc
-    pip install python-lsp-server black rope pylint
+#     pip install python-lsp-server black rope pylint
     curl -O --output-dir "$HOME"/.config/kate/lspclient https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/settings.json
 }
 
@@ -68,13 +77,6 @@ oh_my_posh_setup() {
     echo 'eval "$(oh-my-posh init bash --config ~/.poshthemes/avid.omp.json)"' >>~/.bashrc
 }
 
-ngrok_setup() {
-    echo "Installing Ngrok"
-    sudo wget -O ~/ngrok.tgz https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.tgz
-    sudo tar xvzf ~/ngrok.tgz -C /usr/local/bin
-    sudo rm ~/ngrok.tgz
-}
-
 
 
 
@@ -108,6 +110,19 @@ fi
 
 
 
+ntfs_passwordless_mount() {
+	cat <<-'EOF' | sudo tee -a /etc/polkit-1/rules.d/49-nopasswd_global.rules >/dev/null
+
+polkit.addRule(function(action, subject) {
+    if (subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
+	EOF
+}
+
+
+
 service_enabler() {
     sudo systemctl start fstrim.timer
     sudo systemctl enable fstrim.timer
@@ -127,6 +142,7 @@ service_enabler() {
     sudo systemctl mask systemd-rfkill.service systemd-rfkill.socket
 }
 
+
 font_tweaks() {
     sudo pacman -S --noconfirm --needed noto-fonts
 
@@ -139,6 +155,18 @@ font_tweaks() {
     echo "$FILE is backuped and removed"
     fi
 
+
+    FOLDER_LOCATION="$HOME"/.config/fontconfig/fonts.conf
+
+    if [[ -d "$FOLDER_LOCATION" ]]; then
+    echo "$FOLDER_LOCATION exists"
+    else
+    mkdir -p "$HOME"/.config/fontconfig
+    echo "$FILE created"
+    fi
+
+
+
     curl -O --output-dir "$HOME"/.config/fontconfig https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/fonts.conf
 
     sudo curl -O --output-dir /etc/fonts/conf.d https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/76-bangla.conf
@@ -147,6 +175,13 @@ font_tweaks() {
     source ~/.profile
     source ~/.bashrc
 }
+
+
+alias_creation() {
+    echo 'alias grub_update="sudo grub-mkconfig -o /boot/grub/grub.cfg"' >>~/.bashrc
+    echo 'alias src="source ~/.bashrc"' >>~/.bashrc
+}
+
 
 disable_watchdog() {
 
@@ -163,11 +198,39 @@ disable_watchdog() {
     sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
-yay_setup() {
+
+
+chaotic_aur_setup() {
+
+    sudo pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
+    sudo pacman-key --lsign-key FBA220DFC880C036
+    sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+    echo "[chaotic-aur]" | sudo tee -a /etc/pacman.conf
+    echo "Include = /etc/pacman.d/chaotic-mirrorlist" | sudo tee -a /etc/pacman.conf
+    sudo pacman --noconfirm --needed -Syyu
+}
+
+pkg_from_chaotic_aur() {
+    sudo pacman -S --noconfirm --needed yay linux-xanmod-lts google-chrome timeshift-bin wike visual-studio-code-bin zoom ngrok anydesk-bin nerd-fonts-fantasque-sans-mono nerd-fonts-jetbrains-mono ttf-ubuntumono-nerd
+}
+
+
+
+pkg_from_aur() {
+    yay -S --noconfirm --needed grub-btrfs timeshift-autosnap openbangla-keyboard-bin
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+
+yay_setup_from_source() {
     sudo pacman -S --noconfirm --needed base-devel
     git clone https://aur.archlinux.org/yay.git
     cd yay && makepkg -si
+    cd ../
+    sudo rm -r yay
 }
+
+
 
 system_update
 utility_package_setup
@@ -178,9 +241,12 @@ oh_my_posh_setup
 printer_setup
 docker_setup
 node_js_setup
-ngrok_setup
 ssh_fix
+ntfs_passwordless_mount
 font_tweaks
 service_enabler
 disable_watchdog
-yay_setup
+alias_creation
+chaotic_aur_setup
+pkg_from_chaotic_aur
+pkg_from_aur
