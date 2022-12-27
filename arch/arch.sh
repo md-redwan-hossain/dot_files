@@ -6,7 +6,7 @@ system_update() {
 
 
 utility_package_setup() {
-    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord nomacs obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw bluez-utils bluez pulseaudio-bluetooth firefox flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie pacman-contrib neofetch
+    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord gwenview obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw bluez-utils bluez pulseaudio-bluetooth firefox flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie pacman-contrib neofetch
 }
 
 misc_package_setup() {
@@ -15,7 +15,7 @@ misc_package_setup() {
 }
 
 dev_package_setup() {
-    sudo pacman -S --noconfirm --needed wireguard-tools openresolv graphviz git github-cli jdk-openjdk nethogs gpick which curl wget android-tools base-devel
+    sudo pacman -S --noconfirm --needed wireguard-tools tree openresolv graphviz git github-cli jdk-openjdk nethogs gpick which curl wget android-tools base-devel
 
     curl -O --output-dir "$HOME" https://raw.githubusercontent.com/redwan-hossain/dot_files/main/arch/lazypac.py
     echo 'alias lpac="python $HOME/lazypac.py"' >>~/.bashrc
