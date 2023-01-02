@@ -1,5 +1,40 @@
 #!/usr/bin/env bash
 
+
+uninstall_bloat() {
+  echo "Uninstalling some bloats"
+  sudo apt purge budgie-rotation-lock-applet budgie-keyboard-autoswitch-applet budgie-hotcorners-applet aisleriot rhythmbox magnus gnome-software gnome-mahjongg deja-dup cheese gnome-mines gnome-sudoku gnome-font-viewer geary gthumb gnome-maps thunderbird thunderbird-gnome-support transmission-gtk transmission-common -y
+  sudo apt autoremove -y
+}
+
+
+
+uninstall_snap() {
+  echo "Uninstalling snap"
+  sudo snap remove --purge firefox
+  sudo snap remove --purge ubuntu-budgie-welcome
+  sudo snap remove --purge gtk-common-themes
+  sudo snap remove --purge gnome-3-38-2004
+  sudo snap remove --purge gtk-common-themes
+  sudo snap remove --purge snapd-desktop-integration
+  sudo snap remove --purge bare
+  sudo snap remove --purge core20
+  sudo snap remove --purge snapd
+  sudo systemctl disable snapd.service
+  sudo systemctl disable snapd.socket
+  sudo systemctl disable snapd.seeded.service
+  sudo apt remove --autoremove snapd -y
+  sudo rm -rf /var/cache/snapd/
+  sudo rm -fr ~/snap
+  sudo apt-mark hold snapd
+  sudo touch /etc/apt/preferences.d/nosnap.pref
+  echo "Package: snapd" | sudo tee -a /etc/apt/preferences.d/nosnap.pref
+  echo "Pin: release a=*" | sudo tee -a /etc/apt/preferences.d/nosnap.pref
+  echo "Pin-Priority: -10" | sudo tee -a /etc/apt/preferences.d/nosnap.pref
+  sudo apt update
+}
+
+
 add_ppa() {
   echo "Adding PPAs"
   sudo apt update
@@ -30,7 +65,7 @@ install_budgie_applets() {
 
 install_dev_apps() {
   echo "Adding dev_apps"
-  sudo apt install python-is-python3 python3-pip python3-venv codeblocks codeblocks-contrib build-essential openssh-server curl git git-extras clang-format-14 libgconf-2-4 libffi-dev libncurses5-dev default-jre default-jdk vim graphviz android-tools-adb android-tools-fastboot -y
+  sudo apt install traceroute build-essential openssh-server curl git git-extras clang-format-14 libgconf-2-4 libffi-dev libncurses5-dev default-jre default-jdk vim graphviz android-tools-adb android-tools-fastboot -y
 
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null && sudo apt update && sudo apt install gh -y
 
@@ -38,11 +73,16 @@ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo 
 
 install_utility_apps() {
   echo "Adding utility_apps"
-  sudo apt install libfuse2 nnn ncdu duf bat webp-pixbuf-loader tlp tlp-rdw ulauncher nvme-cli iotop btop neofetch stacer nomacs gpick p7zip-full mlocate pavucontrol flatpak gedit-plugin-text-size muon qapt-deb-installer -y
+  sudo apt install libfuse2 nnn ncdu duf bat webp-pixbuf-loader tlp tlp-rdw ulauncher nvme-cli iotop btop neofetch stacer nomacs gpick p7zip-full mlocate pavucontrol flatpak gedit-plugin-text-size muon gdebi -y
 }
 
 install_other_apps() {
  sudo apt install papirus-icon-theme font-manager deluge -y
+}
+
+
+install_missing_apps() {
+ sudo apt install ffmpeg drawing thermald ppa-purge gnome-logs gedit gedit-common gnome-system-monitor mpv celluloid mousetweaks zsync printer-driver-gutenprint baobab evince evince-common file-roller gnome-disk-utility folder-color folder-color-common attr fonts-noto-color-emoji fonts-opensymbol fonts-cascadia-code -y
 }
 
 install_node_js() {
@@ -58,8 +98,9 @@ install_node_js() {
 }
 
 
-python_env_setup() {
-
+python_setup() {
+	
+    sudo apt-get install python-is-python3 python3-pip python3-venv zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python3-tk tk-dev -y
     curl https://pyenv.run | bash
     echo 'export PATH=$PATH:"$HOME/.local/bin"' >>~/.bashrc
     echo 'export PYENV_ROOT="$HOME/.pyenv"' >>~/.bashrc
@@ -67,7 +108,23 @@ python_env_setup() {
     echo 'eval "$(pyenv init -)"' >>~/.bashrc
     echo 'eval "$(pyenv virtualenv-init -)"' >>~/.bashrc
     source ~/.bashrc
-    sudo apt-get install zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python-tk python3-tk tk-dev -y
+}
+
+
+venv_automate(){
+
+	echo 'venv auto active'
+	cat <<-'EOF' | tee -a "$HOME"/.bashrc >/dev/null
+VENV_DIR_HIDDEN=".venv"
+VENV_DIR_NORMAL="venv"
+
+if [ -d "${VENV_DIR_HIDDEN}" ]; then
+    source .venv/bin/activate
+
+elif [ -d "${VENV_DIR_NORMAL}" ]; then
+    source venv/bin/activate
+fi
+	EOF
 }
 
 
@@ -80,6 +137,7 @@ oh_my_posh_setup() {
     curl -O --output-dir ~/.poshthemes https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/avid.omp.json
     echo 'eval "$(oh-my-posh init bash --config ~/.poshthemes/avid.omp.json)"' >>~/.bashrc
 }
+
 
 install_docker() {
   curl -fsSL https://get.docker.com -o get-docker.sh
@@ -95,6 +153,7 @@ install_docker_ctop() {
   sudo apt update
   sudo apt install docker-ctop -y
 }
+
 
 install_vs_code() {
   echo "Installing VS Code"
@@ -126,37 +185,8 @@ install_ngrok() {
 }
 
 
-uninstall_snap() {
-  echo "Uninstalling snap"
-  sudo snap remove --purge firefox
-  sudo snap remove --purge ubuntu-budgie-welcome
-  sudo snap remove --purge gtk-common-themes
-  sudo snap remove --purge gnome-3-38-2004
-  sudo snap remove --purge gtk-common-themes
-  sudo snap remove --purge snapd-desktop-integration
-  sudo snap remove --purge bare
-  sudo snap remove --purge core20
-  sudo snap remove --purge snapd
-  sudo systemctl disable snapd.service
-  sudo systemctl disable snapd.socket
-  sudo systemctl disable snapd.seeded.service
-  sudo apt remove --autoremove snapd -y
-  sudo rm -rf /var/cache/snapd/
-  sudo rm -fr ~/snap
-  sudo apt-mark hold snapd
-  sudo touch /etc/apt/preferences.d/nosnap.pref
-  echo "Package: snapd" | sudo tee -a /etc/apt/preferences.d/nosnap.pref
-  echo "Pin: release a=*" | sudo tee -a /etc/apt/preferences.d/nosnap.pref
-  echo "Pin-Priority: -10" | sudo tee -a /etc/apt/preferences.d/nosnap.pref
-  sudo apt update
-}
 
 
-uninstall_bloat() {
-  echo "Uninstalling some bloats"
-  sudo apt purge aisleriot rhythmbox gnome-software gnome-mahjongg deja-dup texlive-base cheese gnome-mines gnome-sudoku gnome-font-viewer geary gthumb gnome-maps  thunderbird thunderbird-gnome-support transmission-gtk transmission-common -y
-  sudo apt autoremove -y
-}
 
 misc_tweak() {
   gsettings set org.gnome.desktop.peripherals.touchpad click-method areas
@@ -172,23 +202,25 @@ misc_tweak() {
   
 }
 
+uninstall_bloat
+uninstall_snap
 add_ppa
 update_and_upgrade
 install_budgie_applets
 install_dev_apps
 install_utility_apps
 install_other_apps
+#install_missing_apps
 oh_my_posh_setup
 install_node_js
-python_env_setup
+python_setup
+venv_automate
 install_docker
 install_docker_ctop
 install_google_chrome
 install_vs_code
 install_ngrok
 install_zoom
-uninstall_bloat
-uninstall_snap
 misc_tweak
 
 
