@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-
 uninstall_bloat() {
   echo "Uninstalling some bloats"
   sudo apt purge budgie-rotation-lock-applet budgie-keyboard-autoswitch-applet budgie-hotcorners-applet aisleriot rhythmbox magnus gnome-software gnome-mahjongg deja-dup cheese gnome-mines gnome-sudoku gnome-font-viewer geary gthumb gnome-maps thunderbird thunderbird-gnome-support transmission-gtk transmission-common -y
   sudo apt autoremove -y
 }
-
-
 
 uninstall_snap() {
   echo "Uninstalling snap"
@@ -34,7 +31,6 @@ uninstall_snap() {
   sudo apt update
 }
 
-
 add_ppa() {
   echo "Adding PPAs"
   sudo apt update
@@ -50,6 +46,7 @@ add_ppa() {
   sudo add-apt-repository ppa:ubuntubudgie/backports -y
   sudo add-apt-repository ppa:helkaluin/webp-pixbuf-loader -y
   sudo add-apt-repository ppa:mozillateam/ppa -y
+  sudo add-apt-repository ppa:linuxgndu/sqlitebrowser -y
 }
 
 update_and_upgrade() {
@@ -65,9 +62,9 @@ install_budgie_applets() {
 
 install_dev_apps() {
   echo "Adding dev_apps"
-  sudo apt install traceroute build-essential openssh-server curl git git-extras clang-format-14 libgconf-2-4 libffi-dev libncurses5-dev default-jre default-jdk vim graphviz android-tools-adb android-tools-fastboot -y
+  sudo apt install traceroute build-essential openssh-server curl git git-extras clang-format-14 libgconf-2-4 libffi-dev libncurses5-dev default-jre default-jdk vim python3-dev graphviz libgraphviz-dev pkg-config android-tools-adb android-tools-fastboot sqlitebrowser -y
 
-curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null && sudo apt update && sudo apt install gh -y
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null && sudo apt update && sudo apt install gh -y
 
 }
 
@@ -77,12 +74,11 @@ install_utility_apps() {
 }
 
 install_other_apps() {
- sudo apt install papirus-icon-theme font-manager deluge -y
+  sudo apt install papirus-icon-theme font-manager deluge fonts-cascadia-code -y
 }
 
-
 install_missing_apps() {
- sudo apt install ffmpeg drawing thermald ppa-purge gnome-logs gedit gedit-common gnome-system-monitor mpv celluloid mousetweaks zsync printer-driver-gutenprint baobab evince evince-common file-roller gnome-disk-utility folder-color folder-color-common attr fonts-noto-color-emoji fonts-opensymbol fonts-cascadia-code -y
+  sudo apt install ffmpeg drawing thermald ppa-purge gnome-logs gedit gedit-common gnome-system-monitor mpv celluloid mousetweaks zsync printer-driver-gutenprint baobab evince evince-common file-roller gnome-disk-utility folder-color folder-color-common attr fonts-noto-color-emoji fonts-opensymbol fonts-cascadia-code -y
 }
 
 install_node_js() {
@@ -97,24 +93,22 @@ install_node_js() {
   npm config set fund false --location=global
 }
 
-
 python_setup() {
-	
-    sudo apt-get install python-is-python3 python3-pip python3-venv zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python3-tk tk-dev -y
-    curl https://pyenv.run | bash
-    echo 'export PATH=$PATH:"$HOME/.local/bin"' >>~/.bashrc
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >>~/.bashrc
-    echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >>~/.bashrc
-    echo 'eval "$(pyenv init -)"' >>~/.bashrc
-    echo 'eval "$(pyenv virtualenv-init -)"' >>~/.bashrc
-    source ~/.bashrc
+
+  sudo apt-get install python-is-python3 python3-pip python3-venv zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python3-tk tk-dev -y
+  curl https://pyenv.run | bash
+  echo 'export PATH=$PATH:"$HOME/.local/bin"' >>~/.bashrc
+  echo 'export PYENV_ROOT="$HOME/.pyenv"' >>~/.bashrc
+  echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >>~/.bashrc
+  echo 'eval "$(pyenv init -)"' >>~/.bashrc
+  echo 'eval "$(pyenv virtualenv-init -)"' >>~/.bashrc
+  source ~/.bashrc
 }
 
+venv_automate() {
 
-venv_automate(){
-
-	echo 'venv auto active'
-	cat <<-'EOF' | tee -a "$HOME"/.bashrc >/dev/null
+  echo 'venv auto active'
+  cat <<-'EOF' | tee -a "$HOME"/.bashrc >/dev/null
 VENV_DIR_HIDDEN=".venv"
 VENV_DIR_NORMAL="venv"
 
@@ -127,17 +121,14 @@ fi
 	EOF
 }
 
-
-
 oh_my_posh_setup() {
-    echo "Installing Oh My Posh"
-    sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-    sudo chmod +x /usr/local/bin/oh-my-posh
-    mkdir ~/.poshthemes
-    curl -O --output-dir ~/.poshthemes https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/avid.omp.json
-    echo 'eval "$(oh-my-posh init bash --config ~/.poshthemes/avid.omp.json)"' >>~/.bashrc
+  echo "Installing Oh My Posh"
+  sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+  sudo chmod +x /usr/local/bin/oh-my-posh
+  mkdir ~/.poshthemes
+  curl -O --output-dir ~/.poshthemes https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/avid.omp.json
+  echo 'eval "$(oh-my-posh init bash --config ~/.poshthemes/avid.omp.json)"' >>~/.bashrc
 }
-
 
 install_docker() {
   curl -fsSL https://get.docker.com -o get-docker.sh
@@ -145,15 +136,12 @@ install_docker() {
   sudo usermod -aG docker "$USER"
 }
 
-
-
 install_docker_ctop() {
   echo "deb [signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packages.azlux.fr/debian/ bullseye main" | sudo tee /etc/apt/sources.list.d/azlux.list
   sudo wget -O /usr/share/keyrings/azlux-archive-keyring.gpg https://azlux.fr/repo.gpg
   sudo apt update
   sudo apt install docker-ctop -y
 }
-
 
 install_vs_code() {
   echo "Installing VS Code"
@@ -170,6 +158,20 @@ install_google_chrome() {
   sudo apt -f install
 }
 
+install_firefox() {
+
+  echo '
+Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+' | sudo tee /etc/apt/preferences.d/mozilla-firefox
+
+  echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+
+  sudo apt install firefox -v
+
+}
+
 install_zoom() {
   echo "Installing Zoom"
   wget -O zoom.deb https://zoom.us/client/latest/zoom_amd64.deb
@@ -184,22 +186,18 @@ install_ngrok() {
   sudo rm ~/ngrok.tgz
 }
 
-
-
-
-
 misc_tweak() {
   gsettings set org.gnome.desktop.peripherals.touchpad click-method areas
   sudo flatpak override --filesystem="$HOME"/.themes
-  
+
   sudo curl -O --output-dir /etc/fonts/conf.d https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/76-bangla.conf
   echo 'export FREETYPE_PROPERTIES="truetype:interpreter-version=40 cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"' >>~/.profile
   echo 'alias src="source ~/.bashrc"' >>~/.bashrc
-  
+
   sudo systemctl enable tlp.service
   sudo tlp start
   sudo nvme smart-log /dev/nvme0n1 | grep "percentage_used"
-  
+
 }
 
 uninstall_bloat
@@ -218,10 +216,10 @@ venv_automate
 install_docker
 install_docker_ctop
 install_google_chrome
+install_firefox
 install_vs_code
 install_ngrok
 install_zoom
 misc_tweak
-
 
 exit
