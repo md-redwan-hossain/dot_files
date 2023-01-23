@@ -188,6 +188,7 @@ install_ngrok() {
 
 misc_tweak() {
   gsettings set org.gnome.desktop.peripherals.touchpad click-method areas
+  echo "HandleLidSwitch=suspend" | sudo tee -a /etc/systemd/logind.conf
   sudo flatpak override --filesystem="$HOME"/.themes
 
   sudo curl -O --output-dir /etc/fonts/conf.d https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/76-bangla.conf
