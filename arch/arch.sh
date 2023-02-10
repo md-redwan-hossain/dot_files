@@ -10,8 +10,7 @@ utility_package_setup() {
 }
 
 misc_package_setup() {
-    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-indic-otf ttf-ubuntu-font-family noto-fonts noto-fonts-emoji ttf-cascadia-code fuse-exfat exfat-utils ntfs-3g
-    # languagetool
+    sudo pacman -S --noconfirm --needed papirus-icon-theme fuse-exfat exfat-utils ntfs-3g
 }
 
 dev_package_setup() {
@@ -144,30 +143,7 @@ service_enabler() {
 
 
 font_tweaks() {
-    sudo pacman -S --noconfirm --needed noto-fonts
-
-    FILE="$HOME"/.config/fontconfig/fonts.conf
-
-    if [[ -f "$FILE" ]]; then
-    echo "$FILE exists"
-    cp "$HOME"/.config/fontconfig/fonts.conf "$HOME"/.config/fontconfig/fonts_bak.conf
-    rm "$HOME"/.config/fontconfig/fonts.conf
-    echo "$FILE is backuped and removed"
-    fi
-
-
-    FOLDER_LOCATION="$HOME"/.config/fontconfig/fonts.conf
-
-    if [[ -d "$FOLDER_LOCATION" ]]; then
-    echo "$FOLDER_LOCATION exists"
-    else
-    mkdir -p "$HOME"/.config/fontconfig
-    echo "$FILE created"
-    fi
-
-
-
-    curl -O --output-dir "$HOME"/.config/fontconfig https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/fonts.conf
+    sudo pacman -S --noconfirm --needed noto-fonts ttf-indic-otf ttf-ubuntu-font-family noto-fonts noto-fonts-emoji ttf-cascadia-code
 
     sudo curl -O --output-dir /etc/fonts/conf.d https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/76-bangla.conf
 
