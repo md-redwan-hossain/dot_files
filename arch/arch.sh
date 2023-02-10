@@ -10,7 +10,7 @@ utility_package_setup() {
 }
 
 misc_package_setup() {
-    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-ubuntu-font-family noto-fonts noto-fonts-emoji ttf-cascadia-code fuse-exfat exfat-utils ntfs-3g
+    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-indic-otf ttf-ubuntu-font-family noto-fonts noto-fonts-emoji ttf-cascadia-code fuse-exfat exfat-utils ntfs-3g
     # languagetool
 }
 
