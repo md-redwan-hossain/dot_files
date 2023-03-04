@@ -6,15 +6,15 @@ system_update() {
 
 
 utility_package_setup() {
-    sudo pacman -S --noconfirm --needed spectacle telegram-desktop discord gwenview obs-studio warpinator okular ffmpeg unzip zip p7zip vlc tlp tlp-rdw bluez-utils bluez pulseaudio-bluetooth firefox flatpak gnome-calculator nnn ncdu bat duf btop filelight cronie pacman-contrib neofetch
+    sudo pacman -S --noconfirm --needed tlp tlp-rdw cronie spectacle telegram-desktop discord gwenview obs-studio warpinator okular ffmpeg unzip zip p7zip vlc bluez-utils bluez firefox gnome-calculator nnn ncdu bat duf btop filelight pacman-contrib neofetch alsa-utils
 }
 
 misc_package_setup() {
-    sudo pacman -S --noconfirm --needed papirus-icon-theme fuse-exfat exfat-utils ntfs-3g
+    sudo pacman -S --noconfirm --needed papirus-icon-theme ttf-indic-otf ttf-ubuntu-font-family noto-fonts noto-fonts-emoji ttf-cascadia-code fuse-exfat exfat-utils ntfs-3g fuse2
 }
 
 dev_package_setup() {
-    sudo pacman -S --noconfirm --needed wireguard-tools tree openresolv graphviz git github-cli jdk-openjdk nethogs gpick which curl wget android-tools base-devel
+    sudo pacman -S --noconfirm --needed wireguard-tools tree sqlitebrowser openresolv graphviz git github-cli jdk-openjdk dbeaver nethogs gpick which curl wget android-tools base-devel
 
     curl -O --output-dir "$HOME" https://raw.githubusercontent.com/redwan-hossain/dot_files/main/arch/lazypac.py
     echo 'alias lpac="python $HOME/lazypac.py"' >>~/.bashrc
@@ -76,7 +76,12 @@ oh_my_posh_setup() {
     echo 'eval "$(oh-my-posh init bash --config ~/.poshthemes/avid.omp.json)"' >>~/.bashrc
 }
 
+mcfly_setup(){
 
+    sudo curl -LSfs https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sudo sh -s -- --git cantino/mcfly
+
+    echo 'eval "$(mcfly init bash)"' >>~/.bashrc
+}
 
 
 ssh_fix(){
@@ -143,13 +148,18 @@ service_enabler() {
 
 
 font_tweaks() {
-    sudo pacman -S --noconfirm --needed noto-fonts ttf-indic-otf ttf-ubuntu-font-family noto-fonts noto-fonts-emoji ttf-cascadia-code
+    sudo pacman -S --noconfirm --needed noto-fonts
 
     sudo curl -O --output-dir /etc/fonts/conf.d https://raw.githubusercontent.com/redwan-hossain/dot_files/main/misc/76-bangla.conf
 
     echo 'export FREETYPE_PROPERTIES="truetype:interpreter-version=40 cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"' >>~/.profile
+    echo "bn_BD UTF-8" | sudo tee -a /etc/locale.gen
+
     source ~/.profile
     source ~/.bashrc
+
+
+
 }
 
 
@@ -170,7 +180,6 @@ disable_watchdog() {
     echo 'GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet nowatchdog nmi_watchdog=0"' | sudo tee -a /etc/default/grub
     echo 'GRUB_DISABLE_SUBMENU=y' | sudo tee -a /etc/default/grub
     echo 'GRUB_DEFAULT=saved' | sudo tee -a /etc/default/grub
-    echo 'GRUB_SAVEDEFAULT=true' | sudo tee -a /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
@@ -187,7 +196,7 @@ chaotic_aur_setup() {
 }
 
 pkg_from_chaotic_aur() {
-    sudo pacman -S --noconfirm --needed yay linux-xanmod-lts google-chrome timeshift-bin wike visual-studio-code-bin zoom ngrok anydesk-bin nerd-fonts-fantasque-sans-mono nerd-fonts-jetbrains-mono ttf-ubuntumono-nerd
+    sudo pacman -S --noconfirm --needed yay linux-xanmod-lts google-chrome timeshift-bin wike visual-studio-code-bin zoom ngrok anydesk-bin nerd-fonts-fantasque-sans-mono nerd-fonts-jetbrains-mono
 }
 
 
@@ -217,6 +226,7 @@ oh_my_posh_setup
 printer_setup
 docker_setup
 node_js_setup
+mcfly_setup
 ssh_fix
 ntfs_passwordless_mount
 font_tweaks
