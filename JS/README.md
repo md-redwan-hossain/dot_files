@@ -8,7 +8,7 @@ Also, make sure Eslint extension is installed in vs-code. If not, [install from 
 
 
 
-
+`npm install -g yarn && yarn set version stable`
 
 
 
