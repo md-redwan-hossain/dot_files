@@ -7,14 +7,13 @@
         {
           "background": "#1f4b8e",
           "foreground": "#ffffff",
-          "leading_diamond": "\ue0b6",
-          "style": "diamond",
-          "template": "{{ .Icon }} {{ .UserName }} ",
+          "style": "plain",
+          "template": " {{ .Icon }}  {{ .UserName }} ",
           "type": "os"
         },
         {
           "type": "path",
-          "style": "powerline",
+          "style": "plain",
           "powerline_symbol": "\uE0B0",
           "foreground": "#ffffff",
           "background": "#1095a4",
@@ -22,7 +21,6 @@
             "style": "folder"
           }
         },
-
         {
           "background": "#FCA17D",
           "foreground": "#ffffff",
@@ -33,7 +31,7 @@
             "fetch_status": false,
             "fetch_upstream_icon": true
           },
-          "style": "powerline",
+          "style": "plain",
           "template": " \u279c ({{ .UpstreamIcon }}{{ .HEAD }}{{ if gt .StashCount 0 }} \uf692 {{ .StashCount }}{{ end }}) ",
           "type": "git"
         },
@@ -41,44 +39,40 @@
           "background": "#58804e",
           "foreground": "#ffffff",
           "powerline_symbol": "\ue0b0",
-          "style": "powerline",
+          "style": "plain",
           "template": " \ue718 {{ if .PackageManagerIcon }}{{ .PackageManagerIcon }} {{ end }}{{ .Full }} ",
           "type": "node"
         },
-
         {
           "background": "#906cff",
           "foreground": "#100e23",
           "powerline_symbol": "\ue0b0",
-          "style": "powerline",
+          "style": "plain",
           "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} ",
           "type": "python"
         },
-
         {
           "type": "php",
-          "style": "powerline",
+          "style": "plain",
           "powerline_symbol": "\uE0B0",
           "foreground": "#ffffff",
           "background": "#4063D8",
           "template": " \ue73d {{ .Full }} "
         },
-
         {
-          "background": "#83769c",
+          "background": "#253f5f",
           "foreground": "#ffffff",
           "powerline_symbol": "\ue0b0",
           "properties": {
             "always_enabled": true
           },
-          "style": "powerline",
+          "style": "plain",
           "template": " \ufa1e{{ .FormattedMs }} ",
           "type": "executiontime"
         }
       ],
       "type": "prompt"
     },
-
     {
       "alignment": "left",
       "newline": true,
@@ -89,7 +83,6 @@
           "template": "\u279c ",
           "type": "root"
         },
-
         {
           "foreground": "#63F08C",
           "style": "plain",
