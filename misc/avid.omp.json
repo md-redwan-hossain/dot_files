@@ -8,7 +8,7 @@
           "background": "#1f4b8e",
           "foreground": "#ffffff",
           "style": "plain",
-          "template": " {{ .Icon }}  {{ .UserName }} ",
+          "template": " {{ .UserName }} ",
           "type": "os"
         },
         {
@@ -60,15 +60,17 @@
           "template": " \ue73d {{ .Full }} "
         },
         {
+          "type": "executiontime",
+          "style": "plain",
+          "powerline_symbol": "",
           "background": "#253f5f",
           "foreground": "#ffffff",
-          "powerline_symbol": "\ue0b0",
+          "template": " <#fefefe></> {{ .FormattedMs }} ",
           "properties": {
+            "threshold": 500,
+            "style": "austin",
             "always_enabled": true
-          },
-          "style": "plain",
-          "template": " \ufa1e{{ .FormattedMs }} ",
-          "type": "executiontime"
+          }
         }
       ],
       "type": "prompt"
